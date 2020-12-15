@@ -80,37 +80,40 @@ def start_message(message):
             error(message, "Вы не дали названия\n\nПример: /add name")
         
     elif "/set" in message.text:
-        id_a = message.text.split(" ")[1]
-        st_a = message.text.split(" ")[2]
+        try:
+            id_a = message.text.split(" ")[1]
+            st_a = message.text.split(" ")[2]
 
-        if st_a == "+":
-            er = 0
-            st_a = "просмотрено"
+            if st_a == "+":
+                er = 0
+                st_a = "просмотрено"
 
-        elif st_a == "-":
-            er = 0
-            st_a = "непросмотрено"
+            elif st_a == "-":
+                er = 0
+                st_a = "непросмотрено"
 
-        else:
-            er = 1
-            error(message, "Неправильный знак\nДоступно +, -")
+            else:
+                er = 1
+                error(message, "Неправильный знак\nДоступно +, -")
 
-        if er == 0:
-            with lock:
-                c.execute(f"SELECT * FROM `user` WHERE `id`= '{message.chat.id}'")
-                anime = ast.literal_eval(c.fetchone()[1])
-            
-            try:
-                anime[int(id_a)-1][1] = st_a
-                anime = str(anime).replace("'", '"')
+            if er == 0:
                 with lock:
-                    c.execute(f"""UPDATE `user` SET `anime`='{anime}' WHERE `id` = {message.chat.id}""")
-                    db.commit()
+                    c.execute(f"SELECT * FROM `user` WHERE `id`= '{message.chat.id}'")
+                    anime = ast.literal_eval(c.fetchone()[1])
             
-                bot.send_message(message.chat.id, "🌸 Успешно!")
+                try:
+                    anime[int(id_a)-1][1] = st_a
+                    anime = str(anime).replace("'", '"')
+                    with lock:
+                        c.execute(f"""UPDATE `user` SET `anime`='{anime}' WHERE `id` = {message.chat.id}""")
+                        db.commit()
+            
+                    bot.send_message(message.chat.id, "🌸 Успешно!")
 
-            except:
-                error(message, "Такой id не найден!")
+                except:
+                    error(message, "Такой id не найден!")
+        except:
+            error(message, "Используйте /set id +/-")
 
     elif "/del" in message.text:
         try:
