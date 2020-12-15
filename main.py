@@ -9,8 +9,6 @@ from telebot import TeleBot
 
 bot = TeleBot(config.TOKEN)
 
-db = pymysql.connect("us-cdbr-east-02.cleardb.com", "bed556e7305b73", "df0e3315", "heroku_80ac70680d841f5", connect_timeout=31536000)
-c = db.cursor()
 lock = threading.Lock()
 
 def to_smile(num):
@@ -27,6 +25,9 @@ def error(message, error):
 
 @bot.message_handler(commands=['start', 'list', 'add', 'set', 'del', 'info', 'help'])
 def start_message(message):
+    db = pymysql.connect("us-cdbr-east-02.cleardb.com", "bed556e7305b73", "df0e3315", "heroku_80ac70680d841f5")
+    c = db.cursor()
+
     if message.text == "/start":
         try:
             with lock:
@@ -142,6 +143,9 @@ def start_message(message):
     
     elif message.text == "/help":
         off_command(message)
+    
+    c.close()
+    db.close()
         
 
 if __name__ == "__main__":
