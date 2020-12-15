@@ -9,7 +9,7 @@ from telebot import TeleBot
 
 bot = TeleBot(config.TOKEN)
 
-db = pymysql.connect("us-cdbr-east-02.cleardb.com", "bed556e7305b73", "df0e3315", "heroku_80ac70680d841f5")
+db = pymysql.connect("us-cdbr-east-02.cleardb.com", "bed556e7305b73", "df0e3315", "heroku_80ac70680d841f5", connect_timeout=31536000)
 c = db.cursor()
 lock = threading.Lock()
 
